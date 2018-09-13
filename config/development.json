@@ -32,7 +32,6 @@
 	"rebrand_cities_prefix": "rebrandcitiesdevelopmentsite",
 	"apple_pay_merchant_id": "merchant.com.wordpress.test",
 	"livechat_support_locales": [ "en", "es", "pt-br" ],
-	"support_site_locales": [ "en", "es", "de", "ja", "pt-br" ],
 	"features": {
 		"account-recovery": true,
 		"ad-tracking": false,
