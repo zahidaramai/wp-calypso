@@ -78,7 +78,7 @@ const importers = [
 	},
 	{
 		type: IMPORTER_6,
-		isImporterEnabled: isEnabled( 'manage/import/site-importer' ),
+		isImporterEnabled: isEnabled( 'manage/import/engine6' ),
 		component: Importer6,
 	},
 ];
