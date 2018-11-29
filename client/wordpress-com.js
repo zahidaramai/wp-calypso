@@ -266,9 +266,9 @@ const sections = [
 		enableLoggedOut: true,
 	},
 	{
-		name: 'ads',
-		paths: [ '/ads' ],
-		module: 'my-sites/ads',
+		name: 'earn',
+		paths: [ '/earn' ],
+		module: 'my-sites/earn',
 		secondary: true,
 		group: 'sites',
 	},
