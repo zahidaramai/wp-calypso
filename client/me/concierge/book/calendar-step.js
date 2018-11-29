@@ -37,7 +37,6 @@ class CalendarStep extends Component {
 	};
 
 	onSubmit = timestamp => {
-		console.log( this.props );
 		const { currentUserId, signupForm, site } = this.props;
 		const meta = {
 			firstname: signupForm.firstname,
