@@ -45,6 +45,8 @@ class JetpackImporter extends PureComponent {
 
 		return (
 			<CompactCard>
+				<h2>A8C NOTICE: Jetpack Importing is currently in development</h2>
+				<hr />
 				<JetpackFileImporter />
 				<hr />
 				<div>@TODO URL Importer here</div>
