@@ -6,6 +6,7 @@
 
 import React, { PureComponent } from 'react';
 import get from 'lodash/get';
+import debugFactory from 'debug';
 import { connect } from 'react-redux';
 
 /**
@@ -16,6 +17,8 @@ import { startImport } from 'lib/importer/actions';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import wp from 'lib/wp';
 import Button from 'components/button';
+
+const debug = debugFactory( 'calypso:jetpack-importer' );
 
 const importFileToJetpackSite = ( siteId, args ) =>
 	wp.undocumented().jetpackFileImport( siteId, { ...args } );
@@ -42,17 +45,17 @@ class JetpackFileImporter extends PureComponent {
 				headers: {},
 				options: {},
 			} );
-			//console.log( { wut: 'jpfileimport', result } );
-			return result;
+			debug( { wut: 'jpfileimport', result } );
 		} catch ( errorImporting ) {
-			//console.error( { errorImporting } );
+			debug( { errorImporting } );
 		}
 	};
 
 	render() {
+		const { translate } = this.props;
 		return (
 			<div>
-				hola mundo
+				{ translate( 'Import from a file (zip, xml)' ) }
 				<br />
 				<input ref={ this.setFileInputRef } type="file" />
 				<Button onClick={ this.onSubmit }>Upload</Button>
