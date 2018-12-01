@@ -5,16 +5,44 @@
  */
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { localize } from 'i18n-calypso';
 
 /**
  * Internal dependencies
  */
+import { isEnabled } from 'config';
+import { localize } from 'i18n-calypso';
+import { getSelectedSite } from 'state/ui/selectors';
 import CompactCard from 'components/card/compact';
+import EmptyContent from 'components/empty-content';
 import JetpackFileImporter from 'my-sites/site-settings/settings-import/jetpack-file-importer';
 
 class JetpackImporter extends PureComponent {
+	renderUnsupportedCard = () => {
+		const { site, translate } = this.props;
+		const {
+			options: { admin_url: adminUrl },
+			slug,
+			title: siteTitle,
+		} = site;
+
+		const title = siteTitle.length ? siteTitle : slug;
+
+		return (
+			<EmptyContent
+				illustration="/calypso/images/illustrations/illustration-jetpack.svg"
+				title={ translate( 'Want to import into your site?' ) }
+				line={ translate( "Visit your site's wp-admin for all your import and export needs." ) }
+				action={ translate( 'Import into %(title)s', { args: { title } } ) }
+				actionURL={ adminUrl + 'import.php' }
+				actionTarget="_blank"
+			/>
+		);
+	};
 	render() {
+		if ( ! isEnabled( 'manage/import-to-jetpack' ) ) {
+			return this.renderUnsupportedCard();
+		}
+
 		return (
 			<CompactCard>
 				<JetpackFileImporter />
@@ -23,6 +51,6 @@ class JetpackImporter extends PureComponent {
 	}
 }
 
-export default connect(/*state => ( {
-
-} )*/)( localize( JetpackImporter ) );
+export default connect( state => ( {
+	site: getSelectedSite( state ),
+} ) )( localize( JetpackImporter ) );

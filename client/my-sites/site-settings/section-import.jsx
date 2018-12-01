@@ -15,7 +15,6 @@ import { filter, flow, get, isEmpty, once } from 'lodash';
  * Internal dependencies
  */
 import CompactCard from 'components/card/compact';
-import EmptyContent from 'components/empty-content';
 import ImporterStore, { getState as getImporterState } from 'lib/importer/store';
 import Interval, { EVERY_FIVE_SECONDS } from 'lib/interval';
 import WordPressImporter from 'my-sites/importer/importer-wordpress';
@@ -237,40 +236,6 @@ class SiteSettingsImport extends Component {
 		);
 	}
 
-	renderImportersListGate() {
-		if ( this.props.needsVerification && ! this.props.isUnlaunchedSite ) {
-			return <EmailVerificationGate>{ this.renderImportersList() }</EmailVerificationGate>;
-		}
-
-		return this.renderImportersList();
-	}
-
-	renderJetpackImporter = () => {
-		const { site, translate } = this.props;
-		const {
-			options: { admin_url: adminUrl },
-			slug,
-			title: siteTitle,
-		} = site;
-
-		const title = siteTitle.length ? siteTitle : slug;
-
-		if ( isEnabled( 'manage/import-to-jetpack' ) ) {
-			return <JetpackImporter />;
-		}
-
-		return (
-			<EmptyContent
-				illustration="/calypso/images/illustrations/illustration-jetpack.svg"
-				title={ translate( 'Want to import into your site?' ) }
-				line={ translate( "Visit your site's wp-admin for all your import and export needs." ) }
-				action={ translate( 'Import into %(title)s', { args: { title } } ) }
-				actionURL={ adminUrl + 'import.php' }
-				actionTarget="_blank"
-			/>
-		);
-	};
-
 	render() {
 		const { site, siteSlug, translate } = this.props;
 		if ( ! site ) {
@@ -284,7 +249,11 @@ class SiteSettingsImport extends Component {
 				<HeaderCake backHref={ '/settings/general/' + siteSlug }>
 					<h1>{ translate( 'Import' ) }</h1>
 				</HeaderCake>
-				{ isJetpack ? this.renderJetpackImporter() : this.renderImportersListGate() }
+				<EmailVerificationGate
+					needsVerification={ this.props.needsVerification && ! this.props.isUnlaunchedSite }
+				>
+					{ isJetpack ? <JetpackImporter /> : this.renderImportersList() }
+				</EmailVerificationGate>
 			</Main>
 		);
 	}
