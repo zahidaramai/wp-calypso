@@ -94,6 +94,7 @@ describe( 'Checkout', () => {
 		checkout = shallow(
 			<Checkout { ...defaultProps } cart={ { hasLoadedFromServer: true, products: [] } } />
 		);
+
 		expect( checkout.state().cartSettled ).toBe( false );
 	} );
 
@@ -118,5 +119,16 @@ describe( 'Checkout', () => {
 
 		checkout.setProps( { cart: { hasLoadedFromServer: false, products: [] } } );
 		expect( checkout.state().cartSettled ).toBe( true );
+	} );
+
+	test( 'pending payment checkout blocker', () => {
+		const wrapper = shallow(
+			<Checkout
+				{ ...defaultProps }
+				cart={ { hasLoadedFromServer: true, products: [], has_pending_payment: true } }
+			/>
+		);
+		console.log( wrapper.debug() );
+		expect( wrapper.find( 'Localized(PendingPaymentBlocker)' ) ).toHaveLength( 1 );
 	} );
 } );

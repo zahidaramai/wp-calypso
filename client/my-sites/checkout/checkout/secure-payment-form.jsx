@@ -5,10 +5,9 @@
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import React, { Component } from 'react';
-import { get, find, defer, pick, isEqual, noop } from 'lodash';
+import { get, find, defer, pick, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import debugFactory from 'debug';
-import config from 'config';
 
 /**
  * Internal dependencies
@@ -27,11 +26,11 @@ import { fullCreditsPayment, newCardPayment, storedCardPayment } from 'lib/store
 import analytics from 'lib/analytics';
 import { setPayment, submitTransaction } from 'lib/upgrades/actions';
 import cartValues, {
+	isPaymentMethodEnabled,
 	isPaidForFullyInCredits,
 	isFree,
 	cartItems,
 	getLocationOrigin,
-	hasPendingPayment,
 } from 'lib/cart-values';
 import Notice from 'components/notice';
 import { preventWidows } from 'lib/formatting';
@@ -44,7 +43,6 @@ import { recordOrder } from 'lib/analytics/ad-tracking';
 import { getTld } from 'lib/domains';
 import { displayError, clear } from 'lib/upgrades/notices';
 import { removeNestedProperties } from 'lib/cart/store/cart-analytics';
-import PendingPaymentBlocker from './pending-payment-blocker';
 
 /**
  * Module variables
@@ -128,13 +126,6 @@ export class SecurePaymentForm extends Component {
 	}
 
 	getVisiblePaymentBox( { cart, paymentMethods } ) {
-		let i;
-
-		// must be first
-		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) ) {
-			return 'pending-payment-blocker';
-		}
-
 		if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
 		}
@@ -151,9 +142,9 @@ export class SecurePaymentForm extends Component {
 			return this.state.userSelectedPaymentBox;
 		}
 
-		for ( i = 0; i < paymentMethods.length; i++ ) {
-			if ( cartValues.isPaymentMethodEnabled( cart, get( paymentMethods, [ i ] ) ) ) {
-				return paymentMethods[ i ];
+		for ( const method of paymentMethods ) {
+			if ( isPaymentMethodEnabled( cart, method ) ) {
+				return method;
 			}
 		}
 
@@ -599,9 +590,6 @@ export class SecurePaymentForm extends Component {
 						{ this.renderWebPaymentBox() }
 					</div>
 				);
-			case 'pending-payment-blocker':
-				return <div>{ this.renderPendingPaymentBox() }</div>;
-			//return <PendingPaymentBlocker />;
 			default:
 				debug( 'WARN: %o payment unknown', visiblePaymentBox );
 				return null;

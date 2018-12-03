@@ -8,6 +8,7 @@ import i18n, { localize } from 'i18n-calypso';
 import page from 'page';
 import PropTypes from 'prop-types';
 import React from 'react';
+import config from 'config';
 
 /**
  * Internal dependencies
@@ -68,6 +69,8 @@ import { isRequestingSitePlans } from 'state/sites/plans/selectors';
 import { isRequestingPlans } from 'state/plans/selectors';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
 import isAtomicSite from 'state/selectors/is-site-automated-transfer';
+import { hasPendingPayment } from 'lib/cart-values';
+import PendingPaymentBlocker from './pending-payment-blocker';
 
 export class Checkout extends React.Component {
 	static propTypes = {
@@ -501,23 +504,29 @@ export class Checkout extends React.Component {
 	};
 
 	content() {
-		const { selectedSite } = this.props;
+		const { selectedSite, cart } = this.props;
 
-		if ( ! this.isLoading() && this.needsDomainDetails() ) {
+		if ( this.isLoading() ) {
+			return <SecurePaymentFormPlaceholder />;
+		}
+
+		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) === true ) {
+			return <PendingPaymentBlocker />;
+		}
+
+		if ( this.needsDomainDetails() ) {
 			return (
 				<DomainDetailsForm
-					cart={ this.props.cart }
+					cart={ cart }
 					productsList={ this.props.productsList }
 					userCountryCode={ this.props.userCountryCode }
 				/>
 			);
-		} else if ( this.isLoading() ) {
-			return <SecurePaymentFormPlaceholder />;
 		}
 
 		return (
 			<SecurePaymentForm
-				cart={ this.props.cart }
+				cart={ cart }
 				transaction={ this.props.transaction }
 				cards={ this.props.cards }
 				paymentMethods={ this.paymentMethodsAbTestFilter() }
