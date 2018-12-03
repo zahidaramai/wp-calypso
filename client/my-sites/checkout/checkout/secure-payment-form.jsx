@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { get, find, defer, pick, isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import debugFactory from 'debug';
+import config from 'config';
 
 /**
  * Internal dependencies
@@ -30,6 +31,7 @@ import cartValues, {
 	isFree,
 	cartItems,
 	getLocationOrigin,
+	hasPendingPayment,
 } from 'lib/cart-values';
 import Notice from 'components/notice';
 import { preventWidows } from 'lib/formatting';
@@ -42,6 +44,7 @@ import { recordOrder } from 'lib/analytics/ad-tracking';
 import { getTld } from 'lib/domains';
 import { displayError, clear } from 'lib/upgrades/notices';
 import { removeNestedProperties } from 'lib/cart/store/cart-analytics';
+import PendingPaymentBlocker from './pending-payment-blocker';
 
 /**
  * Module variables
@@ -127,7 +130,9 @@ export class SecurePaymentForm extends Component {
 	getVisiblePaymentBox( { cart, paymentMethods } ) {
 		let i;
 
-		if ( isPaidForFullyInCredits( cart ) ) {
+		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) ) {
+			return 'pending-payment-blocker';
+		} else if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
 		} else if ( isFree( cart ) ) {
 			return 'free-cart';
@@ -585,6 +590,8 @@ export class SecurePaymentForm extends Component {
 						{ this.renderWebPaymentBox() }
 					</div>
 				);
+			case 'pending-payment-blocker':
+				return <PendingPaymentBlocker />;
 			default:
 				debug( 'WARN: %o payment unknown', visiblePaymentBox );
 				return null;
