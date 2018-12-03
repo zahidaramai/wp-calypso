@@ -26,7 +26,6 @@ import { fullCreditsPayment, newCardPayment, storedCardPayment } from 'lib/store
 import analytics from 'lib/analytics';
 import { setPayment, submitTransaction } from 'lib/upgrades/actions';
 import cartValues, {
-	isPaymentMethodEnabled,
 	isPaidForFullyInCredits,
 	isFree,
 	cartItems,
@@ -126,25 +125,21 @@ export class SecurePaymentForm extends Component {
 	}
 
 	getVisiblePaymentBox( { cart, paymentMethods } ) {
+		let i;
+
 		if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
-		}
-
-		if ( isFree( cart ) ) {
+		} else if ( isFree( cart ) ) {
 			return 'free-cart';
-		}
-
-		if ( hasFreeTrial( cart ) ) {
+		} else if ( hasFreeTrial( cart ) ) {
 			return 'free-trial';
-		}
-
-		if ( this.state && this.state.userSelectedPaymentBox ) {
+		} else if ( this.state && this.state.userSelectedPaymentBox ) {
 			return this.state.userSelectedPaymentBox;
 		}
 
-		for ( const method of paymentMethods ) {
-			if ( isPaymentMethodEnabled( cart, method ) ) {
-				return method;
+		for ( i = 0; i < paymentMethods.length; i++ ) {
+			if ( cartValues.isPaymentMethodEnabled( cart, get( paymentMethods, [ i ] ) ) ) {
+				return paymentMethods[ i ];
 			}
 		}
 
