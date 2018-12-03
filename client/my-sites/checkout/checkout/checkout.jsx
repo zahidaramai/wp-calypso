@@ -14,7 +14,8 @@ import config from 'config';
  * Internal dependencies
  */
 import analytics from 'lib/analytics';
-import { cartItems, getEnabledPaymentMethods } from 'lib/cart-values';
+import { cartItems, getEnabledPaymentMethods, hasPendingPayment } from 'lib/cart-values';
+import PendingPaymentBlocker from './pending-payment-blocker';
 import { clearSitePlans } from 'state/sites/plans/actions';
 import { clearPurchases } from 'state/purchases/actions';
 import DomainDetailsForm from './domain-details-form';
@@ -69,8 +70,6 @@ import { isRequestingSitePlans } from 'state/sites/plans/selectors';
 import { isRequestingPlans } from 'state/plans/selectors';
 import PageViewTracker from 'lib/analytics/page-view-tracker';
 import isAtomicSite from 'state/selectors/is-site-automated-transfer';
-import { hasPendingPayment } from 'lib/cart-values';
-import PendingPaymentBlocker from './pending-payment-blocker';
 
 export class Checkout extends React.Component {
 	static propTypes = {
@@ -510,7 +509,7 @@ export class Checkout extends React.Component {
 			return <SecurePaymentFormPlaceholder />;
 		}
 
-		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) === true ) {
+		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) ) {
 			return <PendingPaymentBlocker />;
 		}
 

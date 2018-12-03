@@ -9,11 +9,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { identity } from 'lodash';
+import { isEnabled } from 'config';
 
 /**
  * Internal dependencies
  */
 import { Checkout } from '../checkout';
+import { hasPendingPayment } from 'lib/cart-values';
 
 jest.mock( 'lib/upgrades/actions', () => ( {
 	resetTransaction: jest.fn(),
@@ -40,18 +42,26 @@ jest.mock( 'lib/abtest', () => ( {
 jest.mock( 'lib/abtest/active-tests', () => ( {} ) );
 jest.mock( 'lib/cart-values', () => ( {
 	cartItems: {
-		getAll: jest.fn( false ),
-		hasFreeTrial: jest.fn( false ),
-		hasGoogleApps: jest.fn( false ),
-		hasDomainRegistration: jest.fn( false ),
-		hasRenewalItem: jest.fn( false ),
-		hasOnlyRenewalItems: jest.fn( false ),
-		hasTransferProduct: jest.fn( false ),
+		getAll: jest.fn(),
+		hasFreeTrial: jest.fn(),
+		hasGoogleApps: jest.fn(),
+		hasDomainRegistration: jest.fn(),
+		hasRenewalItem: jest.fn(),
+		hasOnlyRenewalItems: jest.fn(),
+		hasTransferProduct: jest.fn(),
 	},
-	isPaymentMethodEnabled: jest.fn( false ),
-	paymentMethodName: jest.fn( false ),
-	getEnabledPaymentMethods: jest.fn( false ),
+	hasPendingPayment: jest.fn(),
+	isPaymentMethodEnabled: jest.fn(),
+	paymentMethodName: jest.fn(),
+	getEnabledPaymentMethods: jest.fn(),
 } ) );
+
+jest.mock( 'config', () => {
+	const mock = () => 'development';
+	mock.isEnabled = jest.fn();
+	return mock;
+} );
+
 //jsdom doesn't properly mock scrollTo
 global.scrollTo = () => {};
 
@@ -121,14 +131,19 @@ describe( 'Checkout', () => {
 		expect( checkout.state().cartSettled ).toBe( true );
 	} );
 
-	test( 'pending payment checkout blocker', () => {
-		const wrapper = shallow(
-			<Checkout
-				{ ...defaultProps }
-				cart={ { hasLoadedFromServer: true, products: [], has_pending_payment: true } }
-			/>
-		);
-		console.log( wrapper.debug() );
+	test( 'checkout blocked on pending payment', () => {
+		isEnabled.mockImplementation( flag => flag === 'async-payments' );
+		hasPendingPayment.mockImplementation( cart => cart && cart.has_pending_payment );
+
+		const wrapper = shallow( <Checkout { ...defaultProps } /> );
+
+		// Need to generate a prop update in order to set cartSettled correctly.
+		// cartSettled isn't derived from props on init so setting the cart above
+		// does nothing.
+		wrapper.setProps( {
+			cart: { hasLoadedFromServer: true, products: [], has_pending_payment: true },
+		} );
+
 		expect( wrapper.find( 'Localized(PendingPaymentBlocker)' ) ).toHaveLength( 1 );
 	} );
 } );
