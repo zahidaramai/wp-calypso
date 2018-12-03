@@ -130,15 +130,24 @@ export class SecurePaymentForm extends Component {
 	getVisiblePaymentBox( { cart, paymentMethods } ) {
 		let i;
 
+		// must be first
 		if ( config.isEnabled( 'async-payments' ) && hasPendingPayment( cart ) ) {
 			return 'pending-payment-blocker';
-		} else if ( isPaidForFullyInCredits( cart ) ) {
+		}
+
+		if ( isPaidForFullyInCredits( cart ) ) {
 			return 'credits';
-		} else if ( isFree( cart ) ) {
+		}
+
+		if ( isFree( cart ) ) {
 			return 'free-cart';
-		} else if ( hasFreeTrial( cart ) ) {
+		}
+
+		if ( hasFreeTrial( cart ) ) {
 			return 'free-trial';
-		} else if ( this.state && this.state.userSelectedPaymentBox ) {
+		}
+
+		if ( this.state && this.state.userSelectedPaymentBox ) {
 			return this.state.userSelectedPaymentBox;
 		}
 
