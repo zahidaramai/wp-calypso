@@ -5,7 +5,7 @@
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import React, { Component } from 'react';
-import { get, find, defer, pick, isEqual } from 'lodash';
+import { get, find, defer, pick, isEqual, noop } from 'lodash';
 import { connect } from 'react-redux';
 import debugFactory from 'debug';
 import config from 'config';
@@ -600,7 +600,8 @@ export class SecurePaymentForm extends Component {
 					</div>
 				);
 			case 'pending-payment-blocker':
-				return <PendingPaymentBlocker />;
+				return <div>{ this.renderPendingPaymentBox() }</div>;
+			//return <PendingPaymentBlocker />;
 			default:
 				debug( 'WARN: %o payment unknown', visiblePaymentBox );
 				return null;

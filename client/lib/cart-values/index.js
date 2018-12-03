@@ -30,6 +30,7 @@ const PAYMENT_METHODS = {
 	'brazil-tef': 'WPCOM_Billing_Ebanx_Redirect_Brazil_Tef',
 	wechat: 'WPCOM_Billing_Stripe_Source_Wechat',
 	'web-payment': 'WPCOM_Billing_Web_Payment',
+	'pending-payment': null,
 };
 
 /**
@@ -268,6 +269,7 @@ function paymentMethodName( method ) {
 			comment: 'Name for WeChat Pay - https://pay.weixin.qq.com/',
 		} ),
 		'web-payment': i18n.translate( 'Wallet' ),
+		'pending-payment': i18n.translate( 'Pending Payment' ),
 	};
 
 	// Temporarily override 'credit or debit' with just 'credit' for india
@@ -294,6 +296,7 @@ function isPaymentMethodEnabled( cart, method ) {
 		'p24',
 		'brazil-tef',
 		'wechat',
+		'pending-payment',
 	];
 	const methodClassName = paymentMethodClassName( method );
 
