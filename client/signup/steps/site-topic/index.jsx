@@ -17,13 +17,12 @@ import StepWrapper from 'signup/step-wrapper';
 import FormLabel from 'components/forms/form-label';
 import InfoPopover from 'components/info-popover';
 import FormFieldset from 'components/forms/form-fieldset';
-import SuggestionSearch from 'components/suggestion-search';
+import SiteVerticalsSuggestionSearch from 'components/site-verticals-suggestion-search';
 import { submitSiteTopic, setSiteTopic } from 'state/signup/steps/site-topic/actions';
 import { getSignupStepsSiteTopic } from 'state/signup/steps/site-topic/selectors';
 import { getSiteType } from 'state/signup/steps/site-type/selectors';
 import { recordTracksEvent } from 'state/analytics/actions';
 import SignupActions from 'lib/signup/actions';
-import { hints } from 'lib/signup/hint-data';
 import { getSiteTypePropertyValue } from 'lib/signup/site-type';
 
 /**
@@ -46,7 +45,6 @@ class SiteTopicStep extends Component {
 
 	constructor( props ) {
 		super( props );
-
 		this.state = {
 			siteTopicValue: props.siteTopic || '',
 		};
@@ -58,24 +56,23 @@ class SiteTopicStep extends Component {
 		} );
 	}
 
-	onSiteTopicChange = value => {
-		this.setState( { siteTopicValue: value } );
+	onSiteTopicChange = ( { vertical_name, vertical_slug } ) => {
+		this.setState( {
+			siteTopicValue: vertical_name,
+			siteTopicSlug: vertical_slug,
+		} );
 		if ( this.props.flowName === 'onboarding-dev' ) {
-			this.props.setSiteTopic( value );
+			this.props.setSiteTopic( vertical_name );
 		}
 	};
 
 	onSubmit = event => {
 		event.preventDefault();
-
-		this.props.submitSiteTopic( this.trimedSiteTopicValue() );
+		this.props.submitSiteTopic( this.state );
 	};
 
-	trimedSiteTopicValue = () => this.state.siteTopicValue.trim();
-
-	renderContent( topicLabel, placeholder ) {
+	renderContent( topicLabel ) {
 		const { translate } = this.props;
-		const currentSiteTopic = this.trimedSiteTopicValue();
 
 		return (
 			<Card className="site-topic__content">
@@ -87,16 +84,13 @@ class SiteTopicStep extends Component {
 								{ translate( "We'll use this to personalize your site and experience." ) }
 							</InfoPopover>
 						</FormLabel>
-						<SuggestionSearch
-							id="siteTopic"
-							placeholder={ placeholder }
+						<SiteVerticalsSuggestionSearch
 							onChange={ this.onSiteTopicChange }
-							suggestions={ Object.values( hints ) }
-							value={ currentSiteTopic }
+							initialValue={ this.state.siteTopicValue }
 						/>
 					</FormFieldset>
 					<div className="site-topic__submit-wrapper">
-						<Button type="submit" disabled={ ! currentSiteTopic } primary>
+						<Button type="submit" disabled={ ! this.state.siteTopicValue } primary>
 							{ translate( 'Continue' ) }
 						</Button>
 					</div>
@@ -111,24 +105,17 @@ class SiteTopicStep extends Component {
 		const headerText = getSiteTypePropertyValue( 'slug', siteType, 'siteTopicHeader' ) || '';
 		const topicLabel = getSiteTypePropertyValue( 'slug', siteType, 'siteTopicLabel' ) || '';
 		// once we have more granular copies per segments, these two should only be used for the default case.
-		const commonPlaceholder = translate( 'e.g. Fashion, travel, design, plumber, electrician' );
 		const commonSubHeaderText = translate( "Don't stress, you can change this later." );
 
 		return {
 			headerText,
 			commonSubHeaderText,
 			topicLabel,
-			commonPlaceholder,
 		};
 	}
 
 	render() {
-		const {
-			headerText,
-			commonSubHeaderText,
-			topicLabel,
-			commonPlaceholder,
-		} = this.getTextFromSiteType();
+		const { headerText, commonSubHeaderText, topicLabel } = this.getTextFromSiteType();
 
 		return (
 			<div>
@@ -141,7 +128,7 @@ class SiteTopicStep extends Component {
 					subHeaderText={ commonSubHeaderText }
 					fallbackSubHeaderText={ commonSubHeaderText }
 					signupProgress={ this.props.signupProgress }
-					stepContent={ this.renderContent( topicLabel, commonPlaceholder ) }
+					stepContent={ this.renderContent( topicLabel ) }
 				/>
 			</div>
 		);
@@ -149,16 +136,16 @@ class SiteTopicStep extends Component {
 }
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	submitSiteTopic: siteTopic => {
+	submitSiteTopic: ( { siteTopicSlug, siteTopicValue } ) => {
 		const { flowName, goToNextStep } = ownProps;
 
 		dispatch(
 			recordTracksEvent( 'calypso_signup_actions_submit_site_topic', {
-				value: siteTopic,
+				value: siteTopicSlug,
 			} )
 		);
 
-		dispatch( submitSiteTopic( siteTopic ) );
+		dispatch( submitSiteTopic( siteTopicValue ) );
 
 		goToNextStep( flowName );
 	},
