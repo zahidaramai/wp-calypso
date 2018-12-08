@@ -137,7 +137,7 @@ Undocumented.prototype.jetpackActivatePlugin = function( siteSlug, pluginPath ) 
 };
 
 // @TODO move everything except the network call to a lib
-Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunkSize = 10 }, fn ) {
+Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunkSize = 10 } ) {
 	try {
 		const chunkSizeBytes = Math.floor( Math.max( 1, chunkSize * 1000000 ) );
 		const totalChunks = Math.ceil( file.size / chunkSizeBytes );
@@ -183,10 +183,6 @@ Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunk
 		);
 
 		console.log( { pieceResults, importResult } );
-
-		if ( typeof fn === 'function' ) {
-			fn();
-		}
 	} catch ( jetpackFileImportError ) {
 		console.error( { jetpackFileImportError } );
 	}
