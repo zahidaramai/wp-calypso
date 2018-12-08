@@ -13,15 +13,11 @@ import { connect } from 'react-redux';
  * Internal dependencies
  */
 import { localize } from 'i18n-calypso';
-import { startImport } from 'lib/importer/actions';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import wp from 'lib/wp';
 import Button from 'components/button';
 
 const debug = debugFactory( 'calypso:jetpack-importer' );
-
-const importFileToJetpackSite = ( siteId, args ) =>
-	wp.undocumented().jetpackFileImport( siteId, { ...args } );
 
 class JetpackFileImporter extends PureComponent {
 	fileInput = {};
@@ -40,12 +36,8 @@ class JetpackFileImporter extends PureComponent {
 		const { siteId } = this.props;
 
 		try {
-			const result = await importFileToJetpackSite( siteId, {
-				file,
-				headers: {},
-				options: {},
-			} );
-			debug( { wut: 'jpfileimport', result } );
+			const result = await wp.undocumented().jetpackFileImport( siteId, { file } );
+			debug( { importSuccess: result } );
 		} catch ( errorImporting ) {
 			debug( { errorImporting } );
 		}
@@ -64,9 +56,6 @@ class JetpackFileImporter extends PureComponent {
 	}
 }
 
-export default connect(
-	state => ( {
-		siteId: getSelectedSiteId( state ),
-	} ),
-	{ startImport }
-)( localize( JetpackFileImporter ) );
+export default connect( state => ( {
+	siteId: getSelectedSiteId( state ),
+} ) )( localize( JetpackFileImporter ) );
