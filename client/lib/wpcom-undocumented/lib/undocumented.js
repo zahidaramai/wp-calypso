@@ -114,6 +114,28 @@ const encodeBlobToBase64 = blob =>
 		reader.readAsDataURL( blob );
 	} );
 
+Undocumented.prototype.jetpackPluginStatus = function( siteSlug, pluginName ) {
+	return this.wpcom.req.get(
+		{ path: `/sites/${ siteSlug }/plugins/${ pluginName }` },
+		{ apiVersion: '1.2' }
+	);
+};
+
+Undocumented.prototype.jetpackInstallPlugin = function( siteSlug, pluginName ) {
+	return this.wpcom.req.post(
+		{ path: `/sites/${ siteSlug }/plugins/${ pluginName }/install` },
+		{ apiVersion: '1.2' }
+	);
+};
+
+Undocumented.prototype.jetpackActivatePlugin = function( siteSlug, pluginPath ) {
+	return this.wpcom.req.post(
+		{ path: `/sites/${ siteSlug }/plugins/${ pluginPath }` },
+		{ apiVersion: '1.2' },
+		{ active: true }
+	);
+};
+
 // @TODO move everything except the network call to a lib
 Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunkSize = 10 }, fn ) {
 	try {
