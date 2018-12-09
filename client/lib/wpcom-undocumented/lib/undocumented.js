@@ -137,9 +137,9 @@ Undocumented.prototype.jetpackActivatePlugin = function( siteSlug, pluginPath ) 
 };
 
 // @TODO move everything except the network call to a lib
-Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunkSize = 10 } ) {
+Undocumented.prototype.jetpackFileImport = async function( siteId, { file, chunkSizeKb = 500 } ) {
 	try {
-		const chunkSizeBytes = Math.floor( Math.max( 1, chunkSize * 1000000 ) );
+		const chunkSizeBytes = Math.floor( Math.max( 1, chunkSizeKb * 1000 ) );
 		const totalChunks = Math.ceil( file.size / chunkSizeBytes );
 		if ( ! totalChunks ) {
 			// TODO show an error..?
