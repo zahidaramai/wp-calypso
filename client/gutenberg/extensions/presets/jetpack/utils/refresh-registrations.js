@@ -11,6 +11,7 @@ import { getPlugin, registerPlugin, unregisterPlugin } from '@wordpress/plugins'
  */
 import getJetpackData from './get-jetpack-data';
 import extensions from '../editor';
+import { isEnabled } from 'config';
 
 /**
  * Refreshes registration of Gutenberg extensions (blocks and plugins)
@@ -28,7 +29,12 @@ export default function refreshRegistrations() {
 	}
 	extensions.forEach( extension => {
 		const { name, settings } = extension;
-		const available = get( extensionAvailability, [ name, 'available' ] );
+		// To workaround a block availability bug, tying Slideshow block availability to the jetpack/blocks/beta feature flag.
+		// TODO: Remove this workaround after the bug is resolved.
+		const available =
+			isEnabled( 'jetpack/blocks/beta' ) && name === 'slideshow'
+				? true
+				: get( extensionAvailability, [ name, 'available' ] );
 
 		if ( has( settings, [ 'render' ] ) ) {
 			// If the extension has a `render` method, it's not a block but a plugin
