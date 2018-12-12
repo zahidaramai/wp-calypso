@@ -14,6 +14,7 @@ import * as MapBlock from 'gutenberg/extensions/map';
 import * as PublicizeBlock from 'gutenberg/extensions/publicize';
 import * as RelatedPostsBlock from 'gutenberg/extensions/related-posts';
 import * as SimplePaymentsBlock from 'gutenberg/extensions/simple-payments';
+import * as SlideshowBlock from 'gutenberg/extensions/slideshow';
 import * as TiledGalleryBlock from 'gutenberg/extensions/tiled-gallery';
 import * as VRBlock from 'gutenberg/extensions/vr';
 import { isEnabled } from 'config';
@@ -26,6 +27,6 @@ export default [
 	PublicizeBlock,
 	SimplePaymentsBlock,
 	...( isEnabled( 'jetpack/blocks/beta' )
-		? [ RelatedPostsBlock, TiledGalleryBlock, VRBlock ]
+		? [ RelatedPostsBlock, SlideshowBlock, TiledGalleryBlock, VRBlock ]
 		: [] ),
 ];
