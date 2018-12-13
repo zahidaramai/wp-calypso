@@ -232,14 +232,6 @@
 	}
 }
 
-// Hide extraneous UI inside secondary view
-.is-secondary-view-active {
-	.inline-help__gutenberg-editor-toggle,
-	.inline-help__classic-editor-toggle {
-		display: none;
-	}
-}
-
 .inline-help__view-heading {
 	display: block;
 	font-size: 14px;
