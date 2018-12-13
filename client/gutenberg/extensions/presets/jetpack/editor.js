@@ -5,9 +5,6 @@
  */
 import './shared/public-path';
 import './editor-shared/block-category'; // Register the Jetpack category
-
-// TODO: Generate dyanmically from index.json
-// Appending `Block` to the names to keep `Map` from colliding with JS' Map
 import * as ContactFormBlock from 'gutenberg/extensions/contact-form';
 import * as MarkdownBlock from 'gutenberg/extensions/markdown';
 import * as MapBlock from 'gutenberg/extensions/map';
