@@ -38,7 +38,6 @@ import './style.scss';
 import DocumentHead from 'components/data/document-head';
 import LocaleSuggestions from 'components/locale-suggestions';
 import SignupProcessingScreen from 'signup/processing-screen';
-import SiteMockups from 'signup/site-mockup';
 
 // Libraries
 import analytics from 'lib/analytics';
@@ -611,7 +610,6 @@ class Signup extends React.Component {
 						/>
 					) }
 				<div className="signup__steps">{ this.renderCurrentStep() }</div>
-				{ this.shouldShowSiteMockups() && <SiteMockups /> }
 				{ this.state.bearerToken && (
 					<WpcomLoginForm
 						authorization={ 'Bearer ' + this.state.bearerToken }
@@ -621,14 +619,6 @@ class Signup extends React.Component {
 				) }
 			</div>
 		);
-	}
-
-	shouldShowSiteMockups() {
-		if ( this.props.flowName !== 'onboarding-dev' ) {
-			return false;
-		}
-		const stepsToShowOn = [ 'site-topic', 'about', 'site-information', 'domains' ];
-		return stepsToShowOn.indexOf( this.props.stepName ) >= 0;
 	}
 }
 

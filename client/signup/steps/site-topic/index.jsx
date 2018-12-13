@@ -142,6 +142,7 @@ class SiteTopicStep extends Component {
 					fallbackSubHeaderText={ commonSubHeaderText }
 					signupProgress={ this.props.signupProgress }
 					stepContent={ this.renderContent( topicLabel, commonPlaceholder ) }
+					showSiteMockups={ this.props.showSiteMockups }
 				/>
 			</div>
 		);
