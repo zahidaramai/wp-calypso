@@ -28,6 +28,6 @@ export default [
 	PublicizeBlock,
 	SimplePaymentsBlock,
 	...( isEnabled( 'jetpack/blocks/beta' )
-		? [ RelatedPostsBlock, TiledGalleryBlock, VRBlock, EmailSubscribeBlock ]
+		? [ EmailSubscribeBlock, RelatedPostsBlock, TiledGalleryBlock, VRBlock ]
 		: [] ),
 ];
