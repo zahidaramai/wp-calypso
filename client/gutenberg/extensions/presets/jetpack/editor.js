@@ -13,6 +13,7 @@ import * as RelatedPostsBlock from 'gutenberg/extensions/related-posts';
 import * as SimplePaymentsBlock from 'gutenberg/extensions/simple-payments';
 import * as TiledGalleryBlock from 'gutenberg/extensions/tiled-gallery';
 import * as VRBlock from 'gutenberg/extensions/vr';
+import * as BusinessHoursBlock from 'gutenberg/extensions/business-hours';
 import { isEnabled } from 'config';
 
 export default [
@@ -23,6 +24,6 @@ export default [
 	PublicizeBlock,
 	SimplePaymentsBlock,
 	...( isEnabled( 'jetpack/blocks/beta' )
-		? [ RelatedPostsBlock, TiledGalleryBlock, VRBlock ]
+		? [ RelatedPostsBlock, TiledGalleryBlock, VRBlock, BusinessHoursBlock ]
 		: [] ),
 ];
