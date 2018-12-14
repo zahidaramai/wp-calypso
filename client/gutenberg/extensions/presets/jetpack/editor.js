@@ -20,7 +20,7 @@ import { isEnabled } from 'config';
 
 export default [
 	{ name: ContactFormBlock.name, settings: ContactFormBlock.settings },
-	...ContactFormBlock.fields,
+	...ContactFormBlock.children,
 	MarkdownBlock,
 	MapBlock,
 	PublicizeBlock,
