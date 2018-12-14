@@ -128,7 +128,7 @@ button {
 
 	&:hover,
 	&:focus {
-		border-color: var( --color-primary-dark );
+		border-color: var( --color-accent-dark );
 		color: $white;
 	}
 	&.is-compact {
