@@ -13,6 +13,7 @@ import * as MarkdownBlock from 'gutenberg/extensions/markdown';
 import * as MapBlock from 'gutenberg/extensions/map';
 import * as PublicizeBlock from 'gutenberg/extensions/publicize';
 import * as RelatedPostsBlock from 'gutenberg/extensions/related-posts';
+import * as ShortlinksBlock from 'gutenberg/extensions/shortlinks';
 import * as SimplePaymentsBlock from 'gutenberg/extensions/simple-payments';
 import * as SubscriptionsBlock from 'gutenberg/extensions/subscriptions';
 import * as TiledGalleryBlock from 'gutenberg/extensions/tiled-gallery';
@@ -28,6 +29,6 @@ export default [
 	SimplePaymentsBlock,
 	SubscriptionsBlock,
 	...( isEnabled( 'jetpack/blocks/beta' )
-		? [ RelatedPostsBlock, TiledGalleryBlock, VRBlock ]
+		? [ RelatedPostsBlock, ShortlinksBlock, TiledGalleryBlock, VRBlock ]
 		: [] ),
 ];
